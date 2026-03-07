@@ -4,7 +4,8 @@ import shutil
 import argparse
 from loguru import logger
 
-from . import __version__, __root__
+from .__version__ import __version__
+from .__root__ import __root__
 
 
 def main():

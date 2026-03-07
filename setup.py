@@ -17,7 +17,16 @@ setup(
     url="https://github.com/Shkvaldev/pyue",
     packages=find_packages(exclude=["__pycache__", "*.pyc"]),
     package_data={
-        "pyue": ["skel/**/*", "skel/**/.*", "skel/*", "skel/.*"],
+        "pyue": [
+            "skel/**/*",
+            "skel/**/.*",
+            "skel/*",
+            "skel/.*",
+            "snippets/**/*",
+            "snippets/**/.*",
+            "snippets/*",
+            "snippets/.*",
+        ],
     },
     include_package_data=True,
     classifiers=[

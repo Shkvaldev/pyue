@@ -26,7 +26,7 @@ class Pyue:
         elif backend_type == BackendType.FastAPI:
             raise NotImplementedError()
 
-        self.logger.debug("App is ready!")
+        self.static_path = static_path
 
     @property
     def router(self) -> Any:

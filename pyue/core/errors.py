@@ -18,3 +18,14 @@ class BackendNotFoundError(Exception):
 
     def __str__(self):
         return f"Can not find backend package: {self.message} (try to reinstall it via `pip install -U {self.message}`)"
+
+
+class PageBuildingError(Exception):
+    """Raises when page fails to render"""
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(message)
+
+    def __str__(self):
+        return f"Failed to build page: {self.message}"
