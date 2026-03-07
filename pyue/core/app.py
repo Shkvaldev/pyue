@@ -7,8 +7,8 @@ from pyue.core.errors import UnsupportedBackendError
 from pyue.backend.flask import FlaskBackend
 
 
-class App:
-    """Master of web app"""
+class Pyue:
+    """Master of WEB UI"""
 
     def __init__(
         self, backend_type: BackendType, static_path: str, logger=logger
