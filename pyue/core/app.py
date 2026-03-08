@@ -1,3 +1,4 @@
+import os
 from typing import Any
 from loguru import logger
 
@@ -11,7 +12,11 @@ class Pyue:
     """Master of WEB UI"""
 
     def __init__(
-        self, backend_type: BackendType, static_path: str, logger=logger
+        self,
+        backend_type: BackendType,
+        static_path: str | None = "static",
+        template_path: str | None = "templates",
+        logger=logger,
     ) -> None:
         self.logger = logger
 
@@ -21,12 +26,16 @@ class Pyue:
                 f"Failed to create app with backend type `{backend_type}`"
             )
             raise UnsupportedBackendError(backend_type)
+
         if backend_type == BackendType.Flask:
-            self._backend = FlaskBackend(static_path=static_path, logger=self.logger)
+            self._backend = FlaskBackend(
+                static_path=static_path, template_path=template_path, logger=self.logger
+            )
         elif backend_type == BackendType.FastAPI:
             raise NotImplementedError()
 
         self.static_path = static_path
+        self.template_path = template_path
 
     @property
     def router(self) -> Any:
@@ -35,6 +44,10 @@ class Pyue:
     def add_page(self, page: Page, url: str, **kwargs) -> None:
         """Includes page into router"""
         self._backend.add_page(page=page, url=url, **kwargs)
+        page.to_file(os.path.join(self.template_path, page.filename))
+        self.logger.debug(
+            f"Page `{page.filename}` ({page.title[:50]}) successfully built"
+        )
 
     def mount(self, app, **kwargs):
         """Registers router in Flask"""

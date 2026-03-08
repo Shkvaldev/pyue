@@ -29,3 +29,25 @@ class PageBuildingError(Exception):
 
     def __str__(self):
         return f"Failed to build page: {self.message}"
+
+
+class AddPageError(Exception):
+    """Raises when backend fails to add page"""
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(message)
+
+    def __str__(self):
+        return f"Failed to add page: {self.message}"
+
+
+class MountBackendError(Exception):
+    """Raises when backend fails to mount in app"""
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(message)
+
+    def __str__(self):
+        return f"Failed to mount backend in app: {self.message}"
