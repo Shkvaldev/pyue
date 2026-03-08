@@ -2,6 +2,7 @@ import os
 import hashlib
 import traceback
 
+
 from pyue.__root__ import __root__
 from pyue.core.errors import PageBuildingError
 
@@ -15,20 +16,50 @@ class Page:
         lang: str = "en",
         favicon: str | None = None,
         filename: str | None = None,
+        static_path: str = "static"
     ) -> None:
+        """
+        Initialize a new Page instance.
+
+        Args:
+            title (str): The title of the page, displayed in the browser tab.
+            lang (str, optional): The language code for the page (e.g., 'en', 'ru').
+                Defaults to "en".
+            favicon (str | None, optional): Path or URL to the favicon. Defaults to None.
+            filename (str | None, optional): Desired filename for the generated HTML file.
+                If None, a unique filename is generated from the title. Defaults to None.
+            static_path (str | None, optional): Path to the static files directory.
+                Defaults to "static".
+        """
         self.title = title
         self.lang = lang
-        self.favicon = favicon
+        if not favicon:
+            self.favicon = "favicon.ico"
+        else:
+            self.favicon = favicon
         self.filename = filename
         if not self.filename:
             hash_object = hashlib.sha256(title.encode())
             hash_hex = hash_object.hexdigest()[:8]
             self.filename = f"page_{hash_hex}.html"
+        self.static_path = static_path
         self.content = []
         self.requirements = []
 
     def to_string(self) -> str:
-        """Renders page to html string"""
+        """
+        Render the page to an HTML string.
+
+        The method generates HTML template using page data
+        (title, language, requirements, and content), and returns the resulting string.
+
+        Returns:
+            str: The fully rendered HTML content of the page.
+
+        Raises:
+            PageBuildingError: If the template file cannot be read or any other
+                rendering error occurs.
+        """
         # Using html template
         template_path = os.path.join(__root__, "snippets", "page.html")
         try:
@@ -37,6 +68,7 @@ class Page:
 
             result = result.replace("$TITLE$", self.title)
             result = result.replace("$LANG$", self.lang)
+            result = result.replace("$FAVICON$", self.static_path + "/" + self.favicon)
             result = result.replace("$REQUIREMENTS$", "\n".join(self.requirements))
 
             contents = []
@@ -49,7 +81,20 @@ class Page:
             raise PageBuildingError(traceback.format_exc())
 
     def to_file(self, file_path: str | None) -> None:
-        """Renders and saves page to file"""
+        """
+        Render the page and save it to a file.
+
+        This method writes the rendered HTML content to the specified file path.
+        If no path is provided, the page's filename attribute is used.
+
+        Args:
+            file_path (str | None): The full path where the HTML file should be saved.
+                If None, the page's internally generated filename is used.
+
+        Raises:
+            PageBuildingError: If writing to the file fails due to an I/O error
+                or a rendering error.
+        """
         try:
             path = file_path or self.filename
             with open(path, "w") as f:

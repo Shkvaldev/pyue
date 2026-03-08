@@ -18,6 +18,20 @@ class Pyue:
         template_path: str | None = "templates",
         logger=logger,
     ) -> None:
+        """
+        Initialize the Pyue application.
+
+        Args:
+            backend_type (BackendType): The type of backend to use (e.g., Flask).
+            static_path (str | None, optional): Path to the static files directory.
+                Defaults to "static".
+            template_path (str | None, optional): Path to the templates directory.
+                Defaults to "templates".
+            logger: Logger instance for logging messages. Defaults to the loguru logger.
+
+        Raises:
+            UnsupportedBackendError: If the provided backend_type is not supported.
+        """
         self.logger = logger
 
         # Creating backend
@@ -39,10 +53,30 @@ class Pyue:
 
     @property
     def router(self) -> Any:
+        """
+        Returns the framework-specific router object.
+
+        For Flask backend, this is a Blueprint. For other backends, it will be the
+        corresponding router object (e.g., APIRouter for FastAPI).
+
+        Returns:
+            Any: The router object from the underlying backend.
+        """
         return self._backend.router
 
     def add_page(self, page: Page, url: str, **kwargs) -> None:
-        """Includes page into router"""
+        """
+        Add a page to the application and write its template file.
+
+        This method registers the page with the backend's router and writes the
+        page's content to a file in the template directory.
+
+        Args:
+            page (Page): The page object containing the template content and filename.
+            url (str): The URL rule for the page (e.g., '/' or '/about').
+            **kwargs: Additional keyword arguments passed to the backend's add_page method,
+                such as context_func.
+        """
         self._backend.add_page(page=page, url=url, **kwargs)
         page.to_file(os.path.join(self.template_path, page.filename))
         self.logger.debug(
@@ -50,5 +84,14 @@ class Pyue:
         )
 
     def mount(self, app, **kwargs):
-        """Registers router in Flask"""
+        """
+        Mount the backend's router onto the given framework application.
+
+        This method delegates to the underlying backend's mount method to integrate
+        the router with the main application instance (e.g., a Flask app).
+
+        Args:
+            app: The framework application instance (e.g., Flask, FastAPI).
+            **kwargs: Additional keyword arguments passed to the backend's mount method.
+        """
         self._backend.mount(app, **kwargs)
