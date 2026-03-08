@@ -26,7 +26,7 @@ f.run()
 - Making MVP web apps creation easy in Python
 - Component-based approach for building web UI without garbage from js frameworks
 
-## Features
+## :fontawesome-solid-list: Features
 - Generating frontend from Python code that is fully integrated with backend (Flask, FastAPI)
 - Very flexible (UI is processed in a separate router, simply includes onto your app)
 - Quite extendable - you can easily implement your own components

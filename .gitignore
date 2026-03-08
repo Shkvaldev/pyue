@@ -3,3 +3,5 @@
 __pycache__
 build
 pyue.egg-info
+.cache
+site
