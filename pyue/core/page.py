@@ -1,9 +1,11 @@
 import os
 import hashlib
 import traceback
+from typing import Union, Optional, List
 
 
 from pyue.__root__ import __root__
+from pyue.core.component import Component
 from pyue.core.errors import PageBuildingError
 
 
@@ -15,8 +17,9 @@ class Page:
         title: str,
         lang: str = "en",
         favicon: str | None = None,
+        content: Optional[List[Union[Component, str]]] = None,
         filename: str | None = None,
-        static_path: str = "static"
+        static_path: str = "static",
     ) -> None:
         """
         Initialize a new Page instance.
@@ -26,6 +29,7 @@ class Page:
             lang (str, optional): The language code for the page (e.g., 'en', 'ru').
                 Defaults to "en".
             favicon (str | None, optional): Path or URL to the favicon. Defaults to None.
+            content: List of component instances or strings to nest inside this page.
             filename (str | None, optional): Desired filename for the generated HTML file.
                 If None, a unique filename is generated from the title. Defaults to None.
             static_path (str | None, optional): Path to the static files directory.
@@ -33,18 +37,15 @@ class Page:
         """
         self.title = title
         self.lang = lang
-        if not favicon:
-            self.favicon = "favicon.ico"
-        else:
-            self.favicon = favicon
+        self.favicon = favicon or "favicon.ico"
         self.filename = filename
         if not self.filename:
             hash_object = hashlib.sha256(title.encode())
             hash_hex = hash_object.hexdigest()[:8]
             self.filename = f"page_{hash_hex}.html"
         self.static_path = static_path
-        self.content = []
-        self.requirements = []
+        self.content = content or []
+        self.requirements = set()
 
     def to_string(self) -> str:
         """
@@ -73,8 +74,12 @@ class Page:
 
             contents = []
             for content in self.content:
-                # TODO: add content rendering logic here
-                pass
+                if isinstance(content, str):
+                    contents.append(" " * 4 + content)
+                    continue
+                # Add component requirements
+                self.requirements.update(content.requirements)
+                contents.extend(content.to_lines(level=1))
             result = result.replace("$CONTENT$", "\n".join(contents))
             return result
         except Exception:

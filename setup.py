@@ -43,7 +43,7 @@ setup(
             "black",
             "mkdocs<=1.6.1",
             "mkdocstrings[python]",
-            "mkdocs-material<=9.7.3"
+            "mkdocs-material<=9.7.3",
         ],
     },
     entry_points={

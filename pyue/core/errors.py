@@ -31,6 +31,17 @@ class PageBuildingError(Exception):
         return f"Failed to build page: {self.message}"
 
 
+class ComponentBuildingError(Exception):
+    """Raises when component fails to render"""
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(message)
+
+    def __str__(self):
+        return f"Failed to build component: {self.message}"
+
+
 class AddPageError(Exception):
     """Raises when backend fails to add page"""
 

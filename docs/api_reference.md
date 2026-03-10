@@ -20,3 +20,6 @@
 
 # Page
 ::: pyue.Page
+
+# Component
+::: pyue.Component

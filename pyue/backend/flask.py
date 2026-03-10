@@ -54,7 +54,7 @@ class FlaskBackend(Backend):
         """
         return self._router
 
-    def add_page(self, page: Page, url: str, context_func = None) -> None:
+    def add_page(self, page: Page, url: str, context_func=None) -> None:
         """
         Add a page to the backend's Blueprint.
 

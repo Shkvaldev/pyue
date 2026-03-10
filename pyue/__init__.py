@@ -3,3 +3,4 @@
 from pyue.core.app import Pyue
 from pyue.core.backend import Backend, BackendType
 from pyue.core.page import Page
+from pyue.core.component import Component
