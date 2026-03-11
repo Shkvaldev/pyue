@@ -25,6 +25,7 @@ class Component:
         v_for: str | None = None,
         content: Optional[List[Union["Component", str]]] = None,
         requirements: set[str] | None = None,
+        no_closing: bool = False,
         **kwargs,
     ) -> None:
         """Initialize a new Component instance.
@@ -32,36 +33,32 @@ class Component:
         Args:
             tag: HTML tag name for the component (e.g., 'div', 'span', 'section').
                 Defaults to "div".
-            idx: Optional identifier for the component in HTML.
+            idx: Optional identifier that becomes the HTML id attribute.
             classes: List of CSS classes to apply to the component.
-            extra_classes: Additional CSS classes to append to existing classes.
-            v_content: Variable name for content insertion in Jinja2 template.
-                The content will be rendered as a variable in the template.
-            v_if: Condition string for Jinja2 `if` directive. The component will
-                only be rendered if this condition evaluates to true.
-            v_for: Loop definition string for Jinja2 `for` directive. Enables
-                repetitive rendering of the component.
-            content: List of child Component instances or strings to nest inside this component.
-            requirements: List of required dependencies or resources for this component.
-            **kwargs: Additional HTML attributes and CSS styles. CSS styles will be
-                automatically formatted and included in the `style` attribute.
-                Key-value pairs (if key starts with attr__) will be converted to HTML attributes.
+            extra_classes: Additional CSS classes appended to existing classes.
+                Useful for extending component styles without modifying base classes.
+            v_content: Variable name for Jinja2 content interpolation. The content
+                will be rendered as {{ variable_name }} in the template.
+            v_if: Jinja2 conditional expression string. The component renders only
+                if this expression evaluates to true. Example: "user.is_authenticated".
+            v_for: Jinja2 loop definition string. Enables repetitive rendering.
+                Example: "item in items" or "key, value in dict.items()".
+            content: List of child Component instances or strings to nest inside
+                this component. Children are rendered recursively.
+            requirements: Set of required dependencies or resources needed by this
+                component (e.g., CSS files, JavaScript modules).
+            no_closing: Flag indicating if the tag should be self-closing without
+                a closing tag. Use for void elements like <img>, <br>, <hr>.
+            **kwargs: Additional HTML attributes and CSS styles:
+                - CSS styles: Any keyword argument not prefixed with "attr__" is
+                  treated as a CSS style. Underscores in keys are converted to
+                  hyphens (e.g., font_size becomes font-size).
+                - HTML attributes: Keys prefixed with "attr__" are treated as
+                  raw HTML attributes (e.g., attr__data_id="123" becomes data-id="123").
 
-        Example:
-            ```python
-            component = Component(
-                 idx = "box",
-                 tag = "div",
-                 classes = ["container", "mx-auto"],
-                 font_size = "14px",
-                 v_content = "message"
-            )
-            print(component.to_string())
-            # <div id="box" class="container mx-auto" style="font-size:14px">
-            #     {{ message }}
-            #
-            # </div>
-            ```
+        Raises:
+            ComponentBuildingError: May be raised during rendering if template
+                syntax is invalid or required variables are missing.
         """
         self.tag = tag
         self.idx = idx
@@ -72,10 +69,13 @@ class Component:
         self.v_for = v_for
         self.content = content or []
         self.requirements = requirements or set()
+        self.no_closing = no_closing
         self.additional_attrs = {}
         # Using other args as `style` data
         self.styles = {}
         for k, v in kwargs.items():
+            if not v:
+                continue
             if k.startswith("attr__"):
                 self.additional_attrs[k.split("attr__")[-1]] = v
                 continue
@@ -145,8 +145,10 @@ class Component:
                 elif isinstance(content, Component):
                     self.requirements.update(content.requirements)
                     result.extend(content.to_lines(level=level + 1))
-
-            result.append(f"\n{indent}</{self.tag}>")
+            
+            # For handling tags like <hr>
+            if not self.no_closing:
+                result.append(f"\n{indent}</{self.tag}>")
 
             if self.v_if:
                 result = (
