@@ -45,7 +45,7 @@ class Component:
             requirements: List of required dependencies or resources for this component.
             **kwargs: Additional HTML attributes and CSS styles. CSS styles will be
                 automatically formatted and included in the `style` attribute.
-                Key-value pairs will be converted to HTML attributes.
+                Key-value pairs (if key starts with attr__) will be converted to HTML attributes.
 
         Example:
             ```python
@@ -72,9 +72,13 @@ class Component:
         self.v_for = v_for
         self.content = content or []
         self.requirements = requirements or set()
+        self.additional_attrs = {}
         # Using other args as `style` data
         self.styles = {}
         for k, v in kwargs.items():
+            if k.startswith("attr__"):
+                self.additional_attrs[k.split("attr__")[-1]] = v
+                continue
             self.styles[k.replace("_", "-")] = v
 
     def to_lines(self, level: int = 0) -> list[str]:
@@ -114,6 +118,12 @@ class Component:
             if self.classes or self.extra_classes:
                 classes = self.classes + self.extra_classes
                 attrs.append(f'class="{" ".join(classes)}"')
+
+            if self.additional_attrs:
+                additional_attrs = []
+                for k, v in self.additional_attrs.items():
+                    additional_attrs.append(f'{k}="{v}"')
+                attrs.extend(additional_attrs)
 
             if self.styles:
                 styles = []
