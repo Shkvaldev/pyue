@@ -62,3 +62,25 @@ class MountBackendError(Exception):
 
     def __str__(self):
         return f"Failed to mount backend in app: {self.message}"
+
+
+class BadResourceError(Exception):
+    """Raises when resource fails is invalid"""
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(message)
+
+    def __str__(self):
+        return f"Failed to connect resource: {self.message}"
+
+
+class ResourceDownloadError(Exception):
+    """Raises when resource fails to be downloaded"""
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(message)
+
+    def __str__(self):
+        return f"Failed to download resource: {self.message}"

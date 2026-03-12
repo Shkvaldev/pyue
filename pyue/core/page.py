@@ -6,7 +6,9 @@ from typing import Union, Optional, List
 
 from pyue.__root__ import __root__
 from pyue.core.component import Component
-from pyue.core.errors import PageBuildingError
+from pyue.core.errors import PageBuildingError, ResourceDownloadError
+from pyue.core.resource import ResourceCss, ResourceJs
+from pyue.utils import download_file
 
 
 class Page:
@@ -70,17 +72,31 @@ class Page:
             result = result.replace("$TITLE$", self.title)
             result = result.replace("$LANG$", self.lang)
             result = result.replace("$FAVICON$", self.static_path + "/" + self.favicon)
-            result = result.replace("$REQUIREMENTS$", "\n".join(self.requirements))
 
             contents = []
             for content in self.content:
                 if isinstance(content, str):
                     contents.append(" " * 4 + content)
                     continue
-                # Add component requirements
-                self.requirements.update(content.requirements)
-                contents.extend(content.to_lines(level=1))
+                elif isinstance(content, Component):
+                    contents.extend(content.to_lines(level=1))
+                    self.requirements.update(content.requirements)
             result = result.replace("$CONTENT$", "\n".join(contents))
+            reqs = []
+            for req in self.requirements:
+                if isinstance(req, ResourceCss):
+                    # Include css link here
+                    req_file = os.path.basename(req.resource)
+                    reqs.append(
+                        f'<link rel="stylesheet" href="{self.static_path+'/'+req_file}">'
+                    )
+                elif isinstance(req, ResourceJs):
+                    # Include js link here
+                    req_file = os.path.basename(req.resource)
+                    reqs.append(
+                        f'<script src="{self.static_path+'/'+req_file}"></script>'
+                    )
+            result = result.replace("$REQUIREMENTS$", "\n".join(reqs))
             return result
         except Exception:
             raise PageBuildingError(traceback.format_exc())
@@ -106,3 +122,17 @@ class Page:
                 f.write(self.to_string())
         except Exception:
             raise PageBuildingError(traceback.format_exc())
+
+        for requirement in self.requirements:
+            try:
+                req_path = os.path.join(
+                    self.static_path, os.path.basename(requirement.resource)
+                )
+                if os.path.exists(req_path):
+                    print(f"[@] Found cached requirement `{req_path}`, skipping ...")
+                    continue
+                print(
+                    f"[*] Downloaded requirement `{download_file(requirement.resource, req_path)}`"
+                )
+            except Exception:
+                raise ResourceDownloadError(requirement.resource)

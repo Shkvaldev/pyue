@@ -5,6 +5,7 @@ from typing import Union, Optional, List
 
 from pyue.__root__ import __root__
 from pyue.core.errors import ComponentBuildingError
+from pyue.core.resource import Resource
 
 
 class Component:
@@ -24,7 +25,7 @@ class Component:
         v_if: str | None = None,
         v_for: str | None = None,
         content: Optional[List[Union["Component", str]]] = None,
-        requirements: set[str] | None = None,
+        requirements: set[Resource] | None = None,
         no_closing: bool = False,
         **kwargs,
     ) -> None:
@@ -143,9 +144,9 @@ class Component:
                     result.append(inner_indent + content)
                     continue
                 elif isinstance(content, Component):
-                    self.requirements.update(content.requirements)
                     result.extend(content.to_lines(level=level + 1))
-            
+                    self.requirements.update(content.requirements)
+
             # For handling tags like <hr>
             if not self.no_closing:
                 result.append(f"\n{indent}</{self.tag}>")
