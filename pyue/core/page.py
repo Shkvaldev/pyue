@@ -82,20 +82,18 @@ class Page:
                     contents.extend(content.to_lines(level=1))
                     self.requirements.update(content.requirements)
             result = result.replace("$CONTENT$", "\n".join(contents))
-            reqs = []
+            reqs = set()
             for req in self.requirements:
                 if isinstance(req, ResourceCss):
                     # Include css link here
                     req_file = os.path.basename(req.resource)
-                    reqs.append(
+                    reqs.add(
                         f'<link rel="stylesheet" href="{self.static_path+'/'+req_file}">'
                     )
                 elif isinstance(req, ResourceJs):
                     # Include js link here
                     req_file = os.path.basename(req.resource)
-                    reqs.append(
-                        f'<script src="{self.static_path+'/'+req_file}"></script>'
-                    )
+                    reqs.add(f'<script src="{self.static_path+'/'+req_file}"></script>')
             result = result.replace("$REQUIREMENTS$", "\n".join(reqs))
             return result
         except Exception:

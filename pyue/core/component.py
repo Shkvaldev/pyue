@@ -5,7 +5,7 @@ from typing import Union, Optional, List
 
 from pyue.__root__ import __root__
 from pyue.core.errors import ComponentBuildingError
-from pyue.core.resource import Resource
+from pyue.core.resource import Resource, ResourceCss, ResourceJs
 
 
 class Component:
@@ -25,7 +25,7 @@ class Component:
         v_if: str | None = None,
         v_for: str | None = None,
         content: Optional[List[Union["Component", str]]] = None,
-        requirements: set[Resource] | None = None,
+        requirements: set[Union[Resource, ResourceCss, ResourceJs]] | None = None,
         no_closing: bool = False,
         **kwargs,
     ) -> None:
@@ -103,9 +103,9 @@ class Component:
         Example:
             ```python
             component = Component(tag="h1", v_content="title")
-            html = component.to_list()
+            html = component.to_lines()
             print(html)
-            # <h1 >{{ title }}</h1>
+            # ['<h1>', '    {{ title }}', '\n</h1>']
             ```
         """
         try:

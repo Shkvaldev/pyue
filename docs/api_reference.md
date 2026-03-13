@@ -4,8 +4,6 @@
     There is only initial API reference, thats why
     the provided info may be not full
 
-## Main creatures
-
 # Pyue
 ::: pyue.Pyue
 
@@ -23,3 +21,6 @@
 
 # Component
 ::: pyue.Component
+
+# Stack
+::: pyue.components.Stack
