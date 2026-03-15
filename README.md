@@ -31,3 +31,9 @@ f.run()
 - Very flexible (UI is processed in a separate router, simply includes onto your app)
 - Quite extendable - you can easily implement your own components
 
+## TODO
+- `ResourceManager` for better resources handling
+- `HTMX` or `Alpine.js` integration for interactivity
+- Custom HTML/CSS/JS embeddings (now available via content string)
+- `FastAPIBackend` for FastAPI support
+- MORE COMPONENTS TO THE GOD OF COMPONENTS
