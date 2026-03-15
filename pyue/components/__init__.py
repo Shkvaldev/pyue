@@ -1,6 +1,12 @@
 from .base.div import Div
 from .base.p import P
-from .base.a import A
+from .base.h import H1, H2, H3, H4, H5, H6
+from .base.small import Small
+from .base.link import Link
+from .base.ul import UL
+from .base.ol import OL
+from .base.li import LI
+from .base.img import Img
 from .base.hr import Hr
 
 from .layouts.container import Container
