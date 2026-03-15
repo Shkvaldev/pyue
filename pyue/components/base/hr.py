@@ -20,7 +20,7 @@ class Hr(Component):
         super().__init__(
             tag="hr",
             idx=idx,
-            classes=classes,
+            classes=["my-4", "w-full"],
             extra_classes=extra_classes,
             v_content=v_content,
             v_if=v_if,
