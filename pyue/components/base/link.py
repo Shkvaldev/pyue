@@ -11,9 +11,4 @@ class Link(Component):
         **kwargs,
     ) -> None:
         classes = ["text-blue-600", "underline"]
-        super().__init__(
-            tag="a",
-            classes=classes,
-            attr__href=url or "#",
-            **kwargs
-        )
+        super().__init__(tag="a", classes=classes, attr__href=url or "#", **kwargs)

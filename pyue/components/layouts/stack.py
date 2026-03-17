@@ -1,10 +1,5 @@
 from typing import Union, Optional
 from pyue.core.component import Component
-from pyue.core.resource import ResourceCss
-
-TAILWIND_CSS = ResourceCss(
-    "https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css"
-)
 
 
 class Stack(Component):
@@ -27,7 +22,7 @@ class Stack(Component):
             spacing: gap between children (int for Tailwind gap-{n} or custom class).
             align: Tailwind class for align-items (e.g., "items-center").
             justify: Tailwind class for justify-content (e.g., "justify-between").
-        
+
         Example:
             ```python
 
@@ -66,6 +61,4 @@ class Stack(Component):
         if justify:
             classes.append(justify)
 
-        super().__init__(
-            tag="div", classes=classes, requirements={TAILWIND_CSS}, **kwargs
-        )
+        super().__init__(tag="div", classes=classes, **kwargs)

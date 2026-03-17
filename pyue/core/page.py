@@ -7,7 +7,7 @@ from typing import Union, Optional, List
 from pyue.__root__ import __root__
 from pyue.core.component import Component
 from pyue.core.errors import PageBuildingError, ResourceDownloadError
-from pyue.core.resource import ResourceCss, ResourceJs
+from pyue.core.resource import Resource, ResourceCss, ResourceJs
 from pyue.utils import download_file
 
 
@@ -22,6 +22,7 @@ class Page:
         content: Optional[List[Union[Component, str]]] = None,
         filename: str | None = None,
         static_path: str = "static",
+        requirements: set[Resource] | None = None,
     ) -> None:
         """
         Initialize a new Page instance.
@@ -47,7 +48,11 @@ class Page:
             self.filename = f"page_{hash_hex}.html"
         self.static_path = static_path
         self.content = content or []
-        self.requirements = set()
+
+        TAILWIND_CSS = ResourceCss(
+            "https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css"
+        )
+        self.requirements = requirements or {TAILWIND_CSS}
 
     def to_string(self) -> str:
         """
@@ -80,7 +85,6 @@ class Page:
                     continue
                 elif isinstance(content, Component):
                     contents.extend(content.to_lines(level=1))
-                    self.requirements.update(content.requirements)
             result = result.replace("$CONTENT$", "\n".join(contents))
             reqs = set()
             for req in self.requirements:
@@ -129,6 +133,7 @@ class Page:
                 if os.path.exists(req_path):
                     print(f"[@] Found cached requirement `{req_path}`, skipping ...")
                     continue
+                print(f"[*] Obtaining {requirement.resource} ...")
                 print(
                     f"[*] Downloaded requirement `{download_file(requirement.resource, req_path)}`"
                 )

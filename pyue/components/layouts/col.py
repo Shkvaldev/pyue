@@ -1,10 +1,5 @@
 from typing import Union
 from pyue.core.component import Component
-from pyue.core.resource import ResourceCss
-
-TAILWIND_CSS = ResourceCss(
-    "https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css"
-)
 
 
 class Col(Component):
@@ -20,7 +15,7 @@ class Col(Component):
                 int: number of columns to span (e.g., 2 → "col-span-2")
                 "full": span across all columns ("col-span-full")
                 None: no explicit span (default column)
-        
+
         Example:
             ```python
             Row(cols=3,
@@ -37,6 +32,4 @@ class Col(Component):
                 classes.append(f"col-span-{span}")
             elif span == "full":
                 classes.append("col-span-full")
-        super().__init__(
-            tag="div", classes=classes, requirements={TAILWIND_CSS}, **kwargs
-        )
+        super().__init__(tag="div", classes=classes, **kwargs)

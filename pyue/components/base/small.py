@@ -6,7 +6,4 @@ class Small(Component):
         self,
         **kwargs,
     ) -> None:
-        super().__init__(
-            tag="small",
-            **kwargs
-        )
+        super().__init__(tag="small", **kwargs)

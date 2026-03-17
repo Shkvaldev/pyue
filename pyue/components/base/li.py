@@ -6,7 +6,4 @@ class LI(Component):
         self,
         **kwargs,
     ) -> None:
-        super().__init__(
-            tag="li",
-            **kwargs
-        )
+        super().__init__(tag="li", **kwargs)

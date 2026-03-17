@@ -25,7 +25,6 @@ class Component:
         v_if: str | None = None,
         v_for: str | None = None,
         content: Optional[List[Union["Component", str]]] = None,
-        requirements: set[Union[Resource, ResourceCss, ResourceJs]] | None = None,
         no_closing: bool = False,
         **kwargs,
     ) -> None:
@@ -46,8 +45,6 @@ class Component:
                 Example: "item in items" or "key, value in dict.items()".
             content: List of child Component instances or strings to nest inside
                 this component. Children are rendered recursively.
-            requirements: Set of required dependencies or resources needed by this
-                component (e.g., CSS files, JavaScript modules).
             no_closing: Flag indicating if the tag should be self-closing without
                 a closing tag. Use for void elements like <img>, <br>, <hr>.
             **kwargs: Additional HTML attributes and CSS styles:
@@ -69,7 +66,6 @@ class Component:
         self.v_if = v_if
         self.v_for = v_for
         self.content = content or []
-        self.requirements = requirements or set()
         self.no_closing = no_closing
         self.additional_attrs = {}
         # Using other args as `style` data
@@ -145,7 +141,6 @@ class Component:
                     continue
                 elif isinstance(content, Component):
                     result.extend(content.to_lines(level=level + 1))
-                    self.requirements.update(content.requirements)
 
             # For handling tags like <hr>
             if not self.no_closing:

@@ -1,10 +1,5 @@
 from typing import Union, List, Optional
 from pyue.core.component import Component
-from pyue.core.resource import ResourceCss
-
-TAILWIND_CSS = ResourceCss(
-    "https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css"
-)
 
 
 class Row(Component):
@@ -34,7 +29,7 @@ class Row(Component):
             as_flex: if True, uses Flexbox instead of Grid
             justify: Tailwind class for justify-content (e.g., "justify-between")
             align: Tailwind class for align-items (e.g., "items-center")
-        
+
         Example:
             ```python
             # Grid with 3 equal columns and gap 4
@@ -79,6 +74,4 @@ class Row(Component):
         if align:
             classes.append(align)
 
-        super().__init__(
-            tag="div", classes=classes, requirements={TAILWIND_CSS}, **kwargs
-        )
+        super().__init__(tag="div", classes=classes, **kwargs)

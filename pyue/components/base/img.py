@@ -1,6 +1,7 @@
 from typing import Optional
 from pyue.core.component import Component
 
+
 class Img(Component):
     """
     Image component that renders an `<img>` HTML tag.
@@ -24,21 +25,13 @@ class Img(Component):
             height: Optional height in pixels (adds height attribute)
             lazy: If True, adds loading="lazy" attribute
         """
-        attrs = {
-            'attr__src': src,
-            'attr__alt': alt
-        }
-        
+        attrs = {"attr__src": src, "attr__alt": alt}
+
         if width:
-            attrs['attr__width'] = str(width)
+            attrs["attr__width"] = str(width)
         if height:
-            attrs['attr__height'] = str(height)
+            attrs["attr__height"] = str(height)
         if lazy:
-            attrs['attr__loading'] = 'lazy'
-            
-        super().__init__(
-            tag="img",
-            no_closing=True,
-            **attrs,
-            **kwargs
-        )
+            attrs["attr__loading"] = "lazy"
+
+        super().__init__(tag="img", no_closing=True, **attrs, **kwargs)

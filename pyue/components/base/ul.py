@@ -7,8 +7,4 @@ class UL(Component):
         **kwargs,
     ) -> None:
         classes = ["list-disc", "list-inside"]
-        super().__init__(
-            tag="ul",
-            classes=classes,
-            **kwargs
-        )
+        super().__init__(tag="ul", classes=classes, **kwargs)

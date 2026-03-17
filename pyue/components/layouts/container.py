@@ -1,21 +1,19 @@
 from pyue.core.component import Component
 
+
 class Container(Component):
     """
     A centered container with responsive max-width, based on Tailwind's `container` class.
     By default, the container is centered and has responsive padding. Use `fluid=True` to make
     it full width without max-width constraints.
     """
-    def init(
-            self,
-            fluid: bool = False,
-            **kwargs
-        ):
+
+    def init(self, fluid: bool = False, **kwargs):
         """
         Args:
             fluid: If True, the container spans the full width (no max-width).
                 If False (default), uses Tailwind's container class.
-        
+
          Example:
             ```python
             # Default container

@@ -7,8 +7,4 @@ class OL(Component):
         **kwargs,
     ) -> None:
         classes = ["list-decimal", "list-inside", "pl-5"]
-        super().__init__(
-            tag="ol",
-            classes=classes,
-            **kwargs
-        )
+        super().__init__(tag="ol", classes=classes, **kwargs)
